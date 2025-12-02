@@ -228,3 +228,39 @@ output "github_actions_key" {
   value     = google_service_account_key.github_actions_key.private_key
   sensitive = true
 }
+
+resource "google_project_iam_member" "github_actions_editor" {
+  project = var.project_id
+  role    = "roles/editor"
+  member  = "serviceAccount:${google_service_account.github_actions.email}"
+}
+
+# Grant Cloud Run service accounts access to secrets
+resource "google_secret_manager_secret_iam_member" "livekit_api_key_access" {
+  secret_id = google_secret_manager_secret.livekit_api_key.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
+}
+
+resource "google_secret_manager_secret_iam_member" "livekit_api_secret_access" {
+  secret_id = google_secret_manager_secret.livekit_api_secret.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
+}
+
+resource "google_secret_manager_secret_iam_member" "deepgram_api_key_access" {
+  secret_id = google_secret_manager_secret.deepgram_api_key.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
+}
+
+resource "google_secret_manager_secret_iam_member" "openai_api_key_access" {
+  secret_id = google_secret_manager_secret.openai_api_key.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com"
+}
+
+# Add this data source at the top
+data "google_project" "project" {
+  project_id = var.project_id
+}
