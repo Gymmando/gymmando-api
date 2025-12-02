@@ -33,34 +33,12 @@ jobs:
         run: |
           docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/gymmando-api:latest ./api
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/gymmando-api:latest
-
+      
       - name: Build and push Agent image
         run: |
           docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/gymmando-agent:latest ./agent
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/gymmando-agent:latest
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
       
-      - name: Terraform Init
-        working-directory: ./infrastructure
-        run: terraform init
-      
-      - name: Terraform Plan
-        working-directory: ./infrastructure
-        run: terraform plan
-        env:
-          TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-          TF_VAR_livekit_api_key: ${{ secrets.LIVEKIT_API_KEY }}
-          TF_VAR_livekit_api_secret: ${{ secrets.LIVEKIT_API_SECRET }}
-          TF_VAR_deepgram_api_key: ${{ secrets.DEEPGRAM_API_KEY }}
-          TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
-      
-      - name: Terraform Apply
-        working-directory: ./infrastructure
-        run: terraform apply -auto-approve
-        env:
-          TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-          TF_VAR_livekit_api_key: ${{ secrets.LIVEKIT_API_KEY }}
-          TF_VAR_livekit_api_secret: ${{ secrets.LIVEKIT_API_SECRET }}
-          TF_VAR_deepgram_api_key: ${{ secrets.DEEPGRAM_API_KEY }}
-          TF_VAR_openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+      - name: Restart agent VM
+        run: |
+          gcloud compute instances reset gymmando-agent --zone=${{ env.REGION }}-a
