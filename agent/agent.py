@@ -30,7 +30,7 @@ async def entrypoint(ctx: JobContext):
     # Create session with STT/LLM/TTS
     session = AgentSession(
         stt=deepgram.STT(model="nova-3"),
-        llm=openai.LLM(model="gpt-5-mini"),
+        llm=openai.LLM(model="gpt-4o-mini"),  # Fixed model name
         tts=openai.TTS(voice="onyx"),
         vad=silero.VAD.load(),
     )
@@ -40,6 +40,9 @@ async def entrypoint(ctx: JobContext):
 
     # Initial greeting
     await session.generate_reply(instructions="Greet the user as their gym buddy!")
+    
+    # Keep agent alive until disconnected
+    await session.wait_for_disconnect()
 
 
 if __name__ == "__main__":
