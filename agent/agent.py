@@ -42,7 +42,7 @@ async def entrypoint(ctx: JobContext):
     await session.generate_reply(instructions="Greet the user as their gym buddy!")
     
     # Keep agent alive until disconnected
-    await session.wait_for_disconnect()
+    await session.agent.start()
 
 
 if __name__ == "__main__":
