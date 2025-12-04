@@ -6,7 +6,7 @@ import os
 
 from dotenv import load_dotenv
 from livekit import agents
-from livekit.agents import Agent, AgentSession, JobContext
+from livekit.agents import Agent, AgentSession, JobContext, RoomInputOptions
 from livekit.plugins import deepgram, openai, silero
 
 load_dotenv()
@@ -36,7 +36,11 @@ async def entrypoint(ctx: JobContext):
     )
 
     # Start session
-    await session.start(agent=agent, room=ctx.room)
+    await session.start(
+    agent=agent,
+    room=ctx.room,
+    room_input_options=RoomInputOptions(close_on_disconnect=False),
+    )
 
     # Initial greeting
     await session.generate_reply(instructions="Greet the user as their gym buddy!")
