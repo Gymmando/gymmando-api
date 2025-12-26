@@ -1,5 +1,12 @@
-livekit-agents==1.1.7
-livekit-plugins-deepgram==1.1.7
-livekit-plugins-openai==1.1.7
-livekit-plugins-silero==1.1.7
 python-dotenv
+livekit
+livekit-agents==1.1.7
+livekit-plugins-openai==1.1.7
+livekit-plugins-deepgram==1.1.7
+livekit-plugins-silero==1.1.7
+supabase
+pydantic
+langchain-core
+langchain-openai
+langgraph
+firebase-admin
